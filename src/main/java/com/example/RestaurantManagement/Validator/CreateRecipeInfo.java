@@ -1,21 +1,21 @@
 package com.example.RestaurantManagement.Validator;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.OffsetDateTime;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class CreateRecipeInfo {
-
-    private Integer recipe_id;
+    @JsonIgnore
     private String recipe_name;
     private String cuisine;
-
+    private OffsetDateTime cook_time;
 
 }
 

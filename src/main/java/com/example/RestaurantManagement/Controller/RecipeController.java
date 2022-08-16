@@ -2,32 +2,58 @@ package com.example.RestaurantManagement.Controller;
 
 import com.example.RestaurantManagement.Repository.RecipeRepository;
 import com.example.RestaurantManagement.Validator.CreateRecipeInfo;
+import com.example.RestaurantManagement.Validator.CreateRecipeValidator;
 import com.example.RestaurantManagement.Validator.UpdateRecipeInfo;
-import com.example.RestaurantManagement.model.tables.pojos.RecipeManagement;
+import com.example.RestaurantManagement.Validator.UpdateRecipeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.*;
 
+
+@RequestMapping("/v1")
 @RestController
 @RequiredArgsConstructor
 public class RecipeController {
 
     private final RecipeRepository recipeRepository;
+    private final CreateRecipeValidator CreateRecipeValidator;
+    private final UpdateRecipeValidator UpdateRecipeValidator;
 
     @PostMapping("/recipes")
     public ResponseEntity<?> createRecipe(@RequestBody CreateRecipeInfo recipeInfo) {
-        return new ResponseEntity<>(RecipeRepository.CreateRecipe(recipeInfo),
-                HttpStatus.OK);
+        var binder = new DataBinder(recipeInfo);
+        binder.setValidator(CreateRecipeValidator);
+        binder.validate();
+        if (binder.getBindingResult().hasErrors())
+            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(recipeRepository.CreateRecipe(recipeInfo), HttpStatus.OK);
     }
 
-    @PutMapping("/recipes/recipeId")
-    public ResponseEntity<?> updateRecipe(@RequestBody UpdateRecipeInfo recipeInfo){
-        return new ResponseEntity<>(RecipeRepository.UpdateRecipe(recipeInfo), HttpStatus.OK);
+    @PutMapping("/recipes/{recipeId}")
+    public ResponseEntity<?> updateRecipe(@RequestBody UpdateRecipeInfo recipeInfo,
+                                          @PathVariable Integer recipeId) {
+        recipeInfo.setRecipe_id(recipeId);
+        return new ResponseEntity<>(recipeRepository.UpdateRecipe(recipeInfo), HttpStatus.OK);
     }
 
+    @GetMapping("/recipes/{recipeId}")
+    public ResponseEntity<?> findRecipe(@PathVariable Integer recipeId) {
+        return RecipeRepository.getRecipeById(recipeId).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
+    @GetMapping("/recipes")
+    public ResponseEntity<?> ListRecipes() {
+        return new ResponseEntity<>(recipeRepository.listRecipes(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/recipes/{recipeId}")
+    public ResponseEntity<?> deleteRecipe(@PathVariable Integer recipeId) {
+        return recipeRepository.deleteRecipe(recipeId).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
+
+

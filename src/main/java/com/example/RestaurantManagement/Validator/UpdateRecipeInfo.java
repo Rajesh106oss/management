@@ -1,16 +1,26 @@
 package com.example.RestaurantManagement.Validator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRecipeInfo {
-
+    @JsonIgnore
     private Integer recipe_id;
     private String recipe_name;
     private String cuisine;
 
+
+  /*  public static Integer getRecipe_Id() {
+        Integer id = null;
+        return id;
+    }
+
+    public Integer getRecipe_id() {
+    }*/
 }
