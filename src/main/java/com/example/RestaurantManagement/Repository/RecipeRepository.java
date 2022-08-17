@@ -19,9 +19,9 @@ import static com.example.RestaurantManagement.model.tables.RecipeManagement.REC
 @RequiredArgsConstructor
 public class RecipeRepository {
 
-    public static DSLContext db;
+    public final DSLContext db;
 
-    public RecipeManagement CreateRecipe(CreateRecipeInfo recipeInfo) {
+    public RecipeManagement createRecipe(CreateRecipeInfo recipeInfo) {
         var record = db.newRecord(RECIPE_MANAGEMENT, new RecipeManagementRecord(null,
                 recipeInfo.getRecipe_name(), recipeInfo.getCuisine(), OffsetDateTime.now()));
         record.store();
@@ -29,7 +29,7 @@ public class RecipeRepository {
     }
 
 
-    public RecipeManagement UpdateRecipe(UpdateRecipeInfo recipeInfo) {
+    public RecipeManagement updateRecipe(UpdateRecipeInfo recipeInfo) {
         return db.update(RECIPE_MANAGEMENT)
                 .set(RECIPE_MANAGEMENT.RECIPE_NAME, recipeInfo.getRecipe_name())
                 .set(RECIPE_MANAGEMENT.CUISINE, recipeInfo.getCuisine())
@@ -39,7 +39,7 @@ public class RecipeRepository {
                 .map(r -> r.into(RecipeManagement.class));
     }
 
-    public Optional<RecipeManagement> getRecipeById(Integer recipeId) {
+    public  Optional<RecipeManagement> getRecipeById(Integer recipeId) {
         return db.selectFrom(RECIPE_MANAGEMENT)
                 .where(RECIPE_MANAGEMENT.RECIPE_ID.eq(recipeId))
                 .fetchOptionalInto(RecipeManagement.class);

@@ -1,3 +1,4 @@
+/*
 package com.example.RestaurantManagement.Validator;
 
 import lombok.RequiredArgsConstructor;
@@ -24,3 +25,4 @@ public class CreateRecipeValidator implements Validator {
             errors.rejectValue(FieldName, "Invalid Recipe Name");
     }
 }
+*/

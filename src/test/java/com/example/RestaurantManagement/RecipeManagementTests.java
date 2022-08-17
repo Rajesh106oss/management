@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class ManagementApplicationTests {
+public class RecipeManagementTests {
 
 	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 	@Autowired
@@ -31,9 +31,9 @@ public class ManagementApplicationTests {
     @Test
     @DisplayName("Create Recipe")
 	void createRecipe() throws Exception{
-		var recipe = new CreateRecipeInfo();
+		var recipe = new CreateRecipeInfo("rice", "indian",null);
 		createRecipe(recipe, status().isOk());
-		recipe.setRecipe_name("Noodles");
+		recipe.setRecipe_name("rice");
 		createRecipe(recipe, status().isBadRequest());
 		}
 
