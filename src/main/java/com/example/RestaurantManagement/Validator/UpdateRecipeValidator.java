@@ -1,4 +1,3 @@
-/*
 package com.example.RestaurantManagement.Validator;
 
 import com.example.RestaurantManagement.Repository.RecipeRepository;
@@ -34,10 +33,9 @@ public class UpdateRecipeValidator implements Validator {
         if (!(recipes.getRecipe_name().length() > 5 && recipes.getRecipe_name().length() < 30))
             errors.rejectValue("name", "Invalid Recipe Name");
         if (errors.hasErrors()) return;
-        var validRecipeId = RecipeRepository.getRecipeById(recipes.getRecipe_id());
+        var validRecipeId = recipeRepository.getRecipeById(recipes.getRecipe_id());
         if (validRecipeId.isEmpty())
             errors.rejectValue("id", "Please provide valid recipeId");
     }
     }
 
-*/

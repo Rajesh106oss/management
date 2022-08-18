@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class CreateRecipeInfo {
     @JsonIgnore
+    private Integer recipe_id;
     private String recipe_name;
     private String cuisine;
     private OffsetDateTime cook_time;

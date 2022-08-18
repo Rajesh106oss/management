@@ -1,6 +1,8 @@
 package com.example.RestaurantManagement;
 
-import com.example.RestaurantManagement.Validator.CreateRecipeInfo;
+
+import com.example.RestaurantManagement.Validator.CreateCustomerInfo;
+import com.example.RestaurantManagement.Validator.CreateOrderInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -22,28 +24,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class RecipeManagementTests {
+public class CustomerManagementTests {
 
-	@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-	@Autowired
-	private MockMvc mockMvc;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
-    @DisplayName("Create Recipe")
-	void createRecipe() throws Exception{
-		var recipe = new CreateRecipeInfo(2,"rice", "indian",null);
-		createRecipe(recipe, status().isOk());
-		recipe.setRecipe_name("rice");
-		createRecipe(recipe, status().isOk());
-		}
+    @DisplayName("Create Customer")
+    void CreateCustomer() throws Exception {
+        var customer = new CreateCustomerInfo(1, "Arun", "adhi@gmail.com", 890754321);
+        createCustomer(customer, status().isOk());
+      /*  customer.setCustomer_name("Arun");
+        createCustomer(customer, status().isBadRequest());*/
+    }
 
-	public void createRecipe(CreateRecipeInfo recipe, ResultMatcher status)
-			throws Exception {
-		mockMvc.perform(post("/v1/recipes")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(new ObjectMapper().writeValueAsString(recipe)))
-				.andExpect(status)
-				.andDo(print());
-
-	}
+    public void createCustomer(CreateCustomerInfo customer, ResultMatcher status)
+            throws Exception {
+        mockMvc.perform(post("/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(customer)))
+                .andExpect(status)
+                .andDo(print());
+    }
 }

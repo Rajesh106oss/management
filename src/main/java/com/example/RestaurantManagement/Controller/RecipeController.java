@@ -2,13 +2,13 @@ package com.example.RestaurantManagement.Controller;
 
 import com.example.RestaurantManagement.Repository.RecipeRepository;
 import com.example.RestaurantManagement.Validator.CreateRecipeInfo;
-/*import com.example.RestaurantManagement.Validator.CreateRecipeValidator;*/
+import com.example.RestaurantManagement.Validator.CreateRecipeValidator;
 import com.example.RestaurantManagement.Validator.UpdateRecipeInfo;
-/*import com.example.RestaurantManagement.Validator.UpdateRecipeValidator;*/
+import com.example.RestaurantManagement.Validator.UpdateRecipeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-/*import org.springframework.validation.DataBinder;*/
+import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class RecipeController {
 
     private final RecipeRepository recipeRepository;
-  /*  private final CreateRecipeValidator CreateRecipeValidator;
-    private final UpdateRecipeValidator UpdateRecipeValidator;*/
+    private final CreateRecipeValidator createRecipeValidator;
+    private final UpdateRecipeValidator updateRecipeValidator;
 
     @PostMapping("/recipes")
     public ResponseEntity<?> createRecipe(@RequestBody CreateRecipeInfo recipeInfo) {
-      /*  var binder = new DataBinder(recipeInfo);
-        binder.setValidator(CreateRecipeValidator);
+        final var binder = new DataBinder(recipeInfo);
+        binder.setValidator(createRecipeValidator);
         binder.validate();
         if (binder.getBindingResult().hasErrors())
-            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);*/
-        var recipe = recipeRepository.createRecipe(recipeInfo);
+            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
+        var recipe =recipeRepository.createRecipe(recipeInfo);
         return new ResponseEntity<>(recipe, HttpStatus.OK);
     }
 
@@ -36,6 +36,11 @@ public class RecipeController {
     public ResponseEntity<?> updateRecipe(@RequestBody UpdateRecipeInfo recipeInfo,
                                           @PathVariable Integer recipeId) {
         recipeInfo.setRecipe_id(recipeId);
+        final var binder = new DataBinder(recipeInfo);
+        binder.setValidator(updateRecipeValidator);
+        binder.validate();
+        if (binder.getBindingResult().hasErrors())
+            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(recipeRepository.updateRecipe(recipeInfo), HttpStatus.OK);
     }
 
