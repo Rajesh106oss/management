@@ -18,8 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,7 +67,6 @@ public class OrderManagementTests {
         UpdateOrder(updateOrderInfo, 0, status().isOk());
     }
 
-
     public void UpdateOrder(UpdateOrderInfo order, Integer orderId, ResultMatcher status)
             throws Exception {
         mockMvc.perform(put("/v1/orders/" + orderId)
@@ -78,14 +76,45 @@ public class OrderManagementTests {
                 .andDo(print());
     }
 
-    private Integer storeAndGetOrderId(CreateOrderInfo createOrderInfo) throws Exception {
+    private Integer storeAndGetOrderId(CreateOrderInfo createOrderInfo)
+            throws Exception {
         return JsonPath.parse(mockMvc.perform(post("/v1/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(createOrderInfo)))
                 .andReturn().getResponse().getContentAsString()).read("id", Integer.class);
     }
 
+    @Order(3)
+    @Test
+    @DisplayName("Get Order")
+    void GetOrderInfo() throws Exception {
+        var createOrderInfo = new CreateOrderInfo(1, "Biryani","more",120);
+        var orderId = storeAndGetOrderId(createOrderInfo);
+        getOrderInfo(orderId, status().isOk());
+        getOrderInfo(0, status().isNotFound());
+    }
 
+    private void getOrderInfo(Integer orderId, ResultMatcher status) throws Exception {
+        mockMvc.perform(get("/v1/orders/" + orderId))
+                .andExpect(status)
+                .andDo(print());
+    }
+
+    @Order(4)
+    @Test
+    @DisplayName("Delete Order")
+    void deleteOrder() throws Exception {
+        var createOrderInfo = new CreateOrderInfo(1,"Biryani","more",120);
+        var orderId = storeAndGetOrderId(createOrderInfo);
+        deleteOrder(orderId, status().isOk());
+        deleteOrder(orderId, status().isNotFound());
+    }
+
+    private void deleteOrder(Integer orderId, ResultMatcher status) throws Exception {
+        mockMvc.perform(delete("/v1/orders/" + orderId))
+                .andExpect(status)
+                .andDo(print());
+    }
 }
 
 

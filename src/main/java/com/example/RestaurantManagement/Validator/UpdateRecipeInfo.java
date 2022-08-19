@@ -15,12 +15,4 @@ public class UpdateRecipeInfo {
     private String recipe_name;
     private String cuisine;
 
-
-  /*  public static Integer getRecipe_Id() {
-        Integer id = null;
-        return id;
-    }
-
-    public Integer getRecipe_id() {
-    }*/
 }
